@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = '/api/blogs'
+const BASE_URL = '/api/blogs'
 
 // .then promise version
 // const getAll = () => {
@@ -8,7 +8,7 @@ const baseUrl = '/api/blogs'
 // }
 
 const getAll = async () => {
-  const response = await axios.get(baseUrl)
+  const response = await axios.get(BASE_URL)
   return response.data
 }
 

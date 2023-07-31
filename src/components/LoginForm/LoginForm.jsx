@@ -1,10 +1,21 @@
 import { useState } from 'react'
 
 import loginService from '../../services/login'
+import blogService from '../../services/blogs'
 
-const LoginForm = ({ user, setUser }) => {
+const LoginForm = ({ user, setUser, setMessage }) => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
+
+    // only censors password in the console.log statement in handleLogin()
+    const passwordCensor = (password) => {
+        let str = []
+        for(let i = 0; i < password.length; i++) {
+            str.push('*')
+        }
+        str = str.join('')
+        return str
+    }
 
     const handleLogin = async (event) => {
         event.preventDefault()
@@ -12,13 +23,25 @@ const LoginForm = ({ user, setUser }) => {
             const user = await loginService.login({
                 username, password
             })
+            window.localStorage.setItem(
+                'loggedAppUser', JSON.stringify(user)
+            ) 
+            blogService.setToken(user.token)
             setUser(user)
             setUsername('')
             setPassword('')
-            console.log(`loggin in as ${username} : ${password}`)
+            console.log(`logging in as ${username} : ${passwordCensor(password)} : ${user.token}`)
+            setMessage(`Welcome ${user.name}`)
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
         } catch(error) {
             // change this to a errorMessage component later
-            console.log(error.message)
+            console.log(error.name, error.message)
+            setMessage('Wrong credentials')
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
         }
         //...
     }

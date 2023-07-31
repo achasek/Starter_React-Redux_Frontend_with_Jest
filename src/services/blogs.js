@@ -1,6 +1,14 @@
 import axios from 'axios'
 const BASE_URL = '/api/blogs'
 
+// we set the token here and not in loginServices since a valid token is required to create and delete blogs and therfore must be sent as part of the request, which starts here
+let token = null
+
+// adds necessary Bearer keyword
+const setToken = (newToken) => {
+  token = `Bearer ${newToken}`
+}
+
 // .then promise version
 // const getAll = () => {
 //   const request = axios.get(baseUrl)
@@ -12,5 +20,14 @@ const getAll = async () => {
   return response.data
 }
 
+const create = async (newBlog) => {
+  // sets token to the auth header, which is needed in the backend
+  const authorizationHeader = {
+    headers: { Authorization: token },
+  }
+  const response = await axios.post(BASE_URL, newBlog, authorizationHeader)
+  return response.data
+}
+
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { getAll }
+export default { setToken, getAll, create }

@@ -16,8 +16,8 @@ const CreateBlogForm = ({ blogs, setBlogs, setMessage }) => {
             })
             setBlogs(blogs.concat(newBlog))
         } catch(error) {
-            console.log(error.name, error.message)
-            setMessage('Error posting blog')
+            console.log(error.name, error.message, error.response.data.error)
+            setMessage(`Error posting blog : ${error.response.data.error}`)
             setTimeout(() => {
               setMessage(null)
             }, 5000)

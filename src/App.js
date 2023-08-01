@@ -39,7 +39,7 @@ const App = () => {
     <div>
       <Notification message={message} />
       {user ?
-        <CreateBlogForm blogs={blogs} setBlogs={setBlogs} setMessage={setMessage} />
+        <CreateBlogForm blogs={blogs} setBlogs={setBlogs} setMessage={setMessage} setUser={setUser} />
         :
         <LoginForm user={user} setUser={setUser} setMessage={setMessage} />
       }

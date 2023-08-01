@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import blogService from '../../services/blogs'
 
-const CreateBlogForm = ({ blogs, setBlogs, setMessage }) => {
+const CreateBlogForm = ({ blogs, setBlogs, setMessage, setUser }) => {
     const [title, setTitle] = useState('')
     const [author, setAuthor] = useState('')
     const [url, setUrl] = useState('')
@@ -15,12 +15,21 @@ const CreateBlogForm = ({ blogs, setBlogs, setMessage }) => {
                 title, author, url
             })
             setBlogs(blogs.concat(newBlog))
+            setMessage(`Successfully posted ${newBlog.title}`)
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
         } catch(error) {
             console.log(error.name, error.message, error.response.data.error)
             setMessage(`Error posting blog : ${error.response.data.error}`)
             setTimeout(() => {
               setMessage(null)
             }, 5000)
+            if(error.response.data.error === 'token expired: please log in again') {
+                setTimeout(() => {
+                    setUser(null)
+                }, 5000)
+            }
         }
     }
 

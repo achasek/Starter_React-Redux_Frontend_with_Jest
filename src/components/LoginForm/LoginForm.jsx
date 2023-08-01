@@ -6,6 +6,7 @@ import blogService from '../../services/blogs'
 const LoginForm = ({ user, setUser, setMessage }) => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
+    const [seePassword, setSeePassword] = useState(false)
 
     // only censors password in the console.log statement in handleLogin()
     const passwordCensor = (password) => {
@@ -15,6 +16,11 @@ const LoginForm = ({ user, setUser, setMessage }) => {
         }
         str = str.join('')
         return str
+    }
+
+    const viewPassword = (event) => {
+        event.preventDefault()
+        setSeePassword(!seePassword)
     }
 
     const handleLogin = async (event) => {
@@ -38,7 +44,7 @@ const LoginForm = ({ user, setUser, setMessage }) => {
         } catch(error) {
             // change this to a errorMessage component later
             console.log(error.name, error.message)
-            setMessage('Wrong credentials')
+            setMessage('Invalid Username or Password')
             setTimeout(() => {
               setMessage(null)
             }, 5000)
@@ -62,12 +68,13 @@ const LoginForm = ({ user, setUser, setMessage }) => {
                 <div>
                     password:
                 <input
-                    type="password"
+                    type={seePassword ? "text" : "password"}
                     value={password}
                     name="Password"
                     onChange={({ target }) => setPassword(target.value)}
                 />
                 </div>
+                <button onClick={viewPassword}>See password</button>
                 <button type="submit">login</button>
             </form>
         </>

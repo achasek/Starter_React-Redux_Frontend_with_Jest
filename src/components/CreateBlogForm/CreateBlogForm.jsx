@@ -1,42 +1,62 @@
 import { useState } from 'react'
 
-import blogService from '../../services/blogs'
+// components/page imports
 
-const CreateBlogForm = ({ blogs, setBlogs, setMessage, setUser }) => {
+// utils / API imports
+// import blogService from '../../services/blogs'
+
+const CreateBlogForm = ({ addBlog }) => {
     const [title, setTitle] = useState('')
     const [author, setAuthor] = useState('')
     const [url, setUrl] = useState('')
 
-    const handlePost = async (event) => {
-        event.preventDefault()
+    // prior to using useRef and moving part of this function to app.js
+    // const handlePost = async (event) => {
+    //     event.preventDefault()
 
-        try {
-            const newBlog = await blogService.create({
-                title, author, url
-            })
-            setBlogs(blogs.concat(newBlog))
-            setMessage(`Successfully posted ${newBlog.title}`)
-            setTimeout(() => {
-              setMessage(null)
-            }, 5000)
-        } catch(error) {
-            console.log(error.name, error.message, error.response.data.error)
-            setMessage(`Error posting blog : ${error.response.data.error}`)
-            setTimeout(() => {
-              setMessage(null)
-            }, 5000)
-            if(error.response.data.error === 'token expired: please log in again') {
-                setTimeout(() => {
-                    setUser(null)
-                }, 5000)
-            }
-        }
-    }
+    //     try {
+    //         const newBlog = await blogService.create({
+    //             title, author, url
+    //         })
+    //         setBlogs(blogs.concat(newBlog))
+    //         setTitle('')
+    //         setAuthor('')
+    //         setUrl('')
+    //         setMessage(`Successfully posted ${newBlog.title}`)
+    //         setTimeout(() => {
+    //           setMessage(null)
+    //         }, 5000)
+    //     } catch(error) {
+    //         console.log(error.name, error.message, error.response.data.error)
+    //         setMessage(`Error posting blog : ${error.response.data.error}`)
+    //         setTimeout(() => {
+    //           setMessage(null)
+    //         }, 5000)
+    //         if(error.response.data.error === 'token expired: please log in again') {
+    //             setTimeout(() => {
+    //                 setUser(null)
+    //             }, 5000)
+    //         }
+    //     }
+    // }
+
+    const addNewBlog = (event) => {
+        event.preventDefault()
+        addBlog({
+            title: title,
+            author: author,
+            url: url
+        })
+    
+        setTitle('')
+        setAuthor('')
+        setUrl('')
+      }
 
     return (
         <>
             <h1>Post New Blog</h1>
-            <form onSubmit={handlePost}>
+            <form onSubmit={addNewBlog}>
                 <div>
                     Title:
                     <input

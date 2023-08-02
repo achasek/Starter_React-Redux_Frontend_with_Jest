@@ -1,9 +1,12 @@
 import { useState } from 'react'
 
+// components/page imports
+
+// utils / API imports
 import loginService from '../../services/login'
 import blogService from '../../services/blogs'
 
-const LoginForm = ({ user, setUser, setMessage }) => {
+const LoginForm = ({ setUser, setMessage }) => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [seePassword, setSeePassword] = useState(false)
@@ -23,6 +26,7 @@ const LoginForm = ({ user, setUser, setMessage }) => {
         setSeePassword(!seePassword)
     }
 
+    // move some functionalilty of this to app.js just like was done with CreateBlogForm
     const handleLogin = async (event) => {
         event.preventDefault()
         try {
@@ -42,41 +46,74 @@ const LoginForm = ({ user, setUser, setMessage }) => {
               setMessage(null)
             }, 5000)
         } catch(error) {
-            // change this to a errorMessage component later
             console.log(error.name, error.message)
             setMessage('Invalid Username or Password')
             setTimeout(() => {
               setMessage(null)
             }, 5000)
         }
-        //...
     }
 
     return (
+        // old conditional rendering prior to props.children implementation and ToggleButton component
+        // <>
+        //     {!showLogin ?
+        //     <>
+        //         <Button handleClick={() => setShowLogin(true)} buttonLabel='Login' />
+        //     </>
+        //     :
+        //     <>
+        //         <h1>Login Form</h1>
+        //             <form onSubmit={handleLogin}>
+        //             <div>
+        //                 username:
+        //             <input
+        //                 type="text"
+        //                 value={username}
+        //                 name="Username"
+        //                 onChange={({ target }) => setUsername(target.value)}
+        //             />
+        //             </div>
+        //             <div>
+        //                 password:
+        //             <input
+        //                 type={seePassword ? "text" : "password"}
+        //                 value={password}
+        //                 name="Password"
+        //                 onChange={({ target }) => setPassword(target.value)}
+        //             />
+        //             </div>
+        //             <button onClick={viewPassword}>See password</button>
+        //             <button type="submit">login</button>
+        //         </form>
+        //         <Button handleClick={() => setShowLogin(false)} buttonLabel='Cancel' />
+        //     </>
+        //     }
+        // </>
         <>
             <h1>Login Form</h1>
-                <form onSubmit={handleLogin}>
+            <form onSubmit={handleLogin}>
                 <div>
                     username:
-                <input
-                    type="text"
-                    value={username}
-                    name="Username"
-                    onChange={({ target }) => setUsername(target.value)}
-                />
+                    <input
+                        type="text"
+                        value={username}
+                        name="Username"
+                        onChange={({ target }) => setUsername(target.value)}
+                    />
                 </div>
                 <div>
                     password:
-                <input
-                    type={seePassword ? "text" : "password"}
-                    value={password}
-                    name="Password"
-                    onChange={({ target }) => setPassword(target.value)}
-                />
+                    <input
+                        type={seePassword ? "text" : "password"}
+                        value={password}
+                        name="Password"
+                        onChange={({ target }) => setPassword(target.value)}
+                    />
                 </div>
-                <button onClick={viewPassword}>See password</button>
-                <button type="submit">login</button>
+                <button type="submit">Login</button>
             </form>
+            <button onClick={viewPassword}>See password</button>
         </>
     )
 }

@@ -21,7 +21,7 @@ const App = () => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
       )  
-    }, [])
+    }, [blogs])
     
     useEffect(() => {
       const loggedUserJSON = window.localStorage.getItem('loggedAppUser')
@@ -57,6 +57,29 @@ const App = () => {
     }
   }
 
+  const handleLike = async (id) => {
+    const blog = blogs.find(blog => blog.id === id)
+    const updatedBlog = {...blog, likes: blog.likes += 1}
+    
+    try {
+      const blogAfterEdit = await blogService.edit(id, updatedBlog)
+
+      setBlogs(blogs.map(blog => blog.id !== id ? blog : blogAfterEdit))
+
+      setMessage(`${blogAfterEdit.title}'s likes were updated from ${blog.likes} to ${blogAfterEdit.likes}`)
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
+    } catch(error) {
+      console.log(error.name, error.message, error.response.data.error)
+      setMessage(`Error liking blog : ${error.response.data.error}`)
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
+      setBlogs(blogs.filter(blog => blog.id !== id))
+    }
+  }
+
   const handleLogout = () => {
     window.localStorage.clear()
     setUser(null)
@@ -77,7 +100,7 @@ const App = () => {
       }
       <h2>Blogs</h2>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} handleLike={handleLike} />
       )}
     </div>
   )

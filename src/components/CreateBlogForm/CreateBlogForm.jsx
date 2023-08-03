@@ -11,6 +11,7 @@ const CreateBlogForm = ({ addBlog }) => {
     const [url, setUrl] = useState('')
 
     // prior to using useRef and moving part of this function to app.js
+    // i moved it because we had to pass down a lot of props from app in the error handling, and for the ToggleButton to work properly since i had trouble passing down the useRef in app to this component, so i just moved that part of the handlePost function to app where the useRef is initialized
     // const handlePost = async (event) => {
     //     event.preventDefault()
 
@@ -40,7 +41,7 @@ const CreateBlogForm = ({ addBlog }) => {
     //     }
     // }
 
-    const addNewBlog = (event) => {
+    const sendBlog = (event) => {
         event.preventDefault()
         addBlog({
             title: title,
@@ -56,29 +57,32 @@ const CreateBlogForm = ({ addBlog }) => {
     return (
         <>
             <h1>Post New Blog</h1>
-            <form onSubmit={addNewBlog}>
+            <form onSubmit={sendBlog}>
                 <div>
                     Title:
                     <input
-                    type="text"
-                    value={title}
-                    onChange={({ target }) => setTitle(target.value)}
+                        name="title"
+                        type="text"
+                        value={title}
+                        onChange={({ target }) => setTitle(target.value)}
                     />
                 </div>
                 <div>
                     Author:
                     <input
-                    type="text"
-                    value={author}
-                    onChange={({ target }) => setAuthor(target.value)}
+                        name="author"
+                        type="text"
+                        value={author}
+                        onChange={({ target }) => setAuthor(target.value)}
                     />
                 </div>
                 <div>
                     Original URL of blog:
                     <input
-                    type="text"
-                    value={url}
-                    onChange={({ target }) => setUrl(target.value)}
+                        name="url"
+                        type="text"
+                        value={url}
+                        onChange={({ target }) => setUrl(target.value)}
                     />
                 </div>
                 <button type="submit">Post</button>

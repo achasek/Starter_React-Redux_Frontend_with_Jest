@@ -1,5 +1,7 @@
 import { useState, useEffect, forwardRef, useImperativeHandle  } from 'react'
 
+import Button from '../Button/Button'
+
 const ToggleButton = forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false)
 
@@ -26,14 +28,16 @@ const ToggleButton = forwardRef((props, ref) => {
     }
   })
 
+  const toggleOffLabel = props.buttonLabel2 || 'Cancel'
+
   return (
     <div>
       <div style={hideWhenVisible}>
-        <button onClick={toggleVisibility}>{props.buttonLabel}</button>
+        <Button handleClick={toggleVisibility} buttonLabel={props.buttonLabel} />
       </div>
       <div style={showWhenVisible}>
         {props.children}
-        <button onClick={toggleVisibility}>Cancel</button>
+        <Button handleClick={toggleVisibility} buttonLabel={toggleOffLabel} />
       </div>
     </div>
   )

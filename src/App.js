@@ -80,6 +80,23 @@ const App = () => {
     }
   }
 
+  const handleDelete = async(id) => {
+    try {
+      await blogService.deleteBlog(id)
+      setMessage('Blog successfully deleted')
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
+      setBlogs(blogs.filter(blog => blog.id !== id))
+    } catch(error) {
+      console.log(error.name, error.message, error.response.data.error)
+      setMessage(`Error deleting blog : ${error.response.data.error}`)
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
+    }
+  }
+
   const handleLogout = () => {
     window.localStorage.clear()
     setUser(null)
@@ -100,7 +117,7 @@ const App = () => {
       }
       <h2>Blogs</h2>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} handleLike={handleLike} />
+        <Blog key={blog.id} blog={blog} handleLike={handleLike} handleDelete={handleDelete} />
       )}
     </div>
   )

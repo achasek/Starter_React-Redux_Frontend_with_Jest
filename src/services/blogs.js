@@ -44,5 +44,4 @@ const deleteBlog = async (id) => {
   await axios.delete(`${BASE_URL}/${id}`, authorizationHeader)
 }
 
-// eslint-disable-next-line import/no-anonymous-default-export
 export default { setToken, getAll, create, edit, deleteBlog }

@@ -1,22 +1,29 @@
 // components/page imports
-import ToggleButton from '../ToggleButton/ToggleButton'
+import ToggleButton from '../ToggleButton/ToggleButton';
+import Button from '../Button/Button';
 
-const Blog = ({ blog, handleLike, handleDelete }) => {
+const Blog = ({ blog, user, handleLike, handleDelete }) => {
 
   return (
     <>
       <p>{blog.title}</p>
-      <ToggleButton buttonLabel='Show Details' buttonLabel2='Hide Details'>
+      <ToggleButton buttonLabel='Show Details' buttonLabel2='Hide Details' >
         <div>
-            by author:{blog.author} - {blog.likes} likes. Posted by username:{blog.user.username}, name:{blog.user.name}. 
-          Can be found at <a target="_blank" rel="noopener noreferrer" href={blog.url}>here</a> 
-          <button onClick={() => handleLike(blog.id)}>Like</button>
-          {/* render this only if cur user === creator of blog later - for now just display error */}
-          <button onClick={() => handleDelete(blog.id)}>Delete</button>
+          By author:{blog.author} - {blog.likes} likes.
+          <br />
+          Posted by username:{blog.user.username}, name:{blog.user.name}.
+          <br />
+          Can be found at <a target="_blank" rel="noopener noreferrer" href={blog.url}>here</a>
+          <br />
+          <Button handleClick={() => handleLike(blog.id)} buttonLabel='Like' />
+          {user &&
+            blog.user.username === user.username &&
+              <Button handleClick={() => handleDelete(blog.id)} buttonLabel='Delete' />
+          }
         </div>
       </ToggleButton>
-    </> 
-  ) 
-}
+    </>
+  );
+};
 
-export default Blog
+export default Blog;

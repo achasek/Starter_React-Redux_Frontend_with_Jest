@@ -15,13 +15,20 @@ const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const [message, setMessage] = useState(null);
+  const [modifiedBlogs, setModifiedBlogs] = useState(false);
 
 
+  // upon show function, it would not display the name and user of a newly posted blog unless you refreshed the page, so i put [blogs] in the dep array, which solves the issue, but creates an infinite loop of get reqs initiated by this useEffect. dunno the answer yet
+  // so heres the makeshift solution for now:
+  // i added a new state just to keep track of when a new blog is added / modified
+  // then update that state when post or put req to /api/blogs is made
+  // this solves prob of username and name not showing before a manual refresh and infinite loop in this useEffect
+  // by separating the states and putting new state in dep arr here as opposed to the original blog state, useEffect no longer is in infinite loop
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
     );
-  }, [blogs]);
+  }, [modifiedBlogs]);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedAppUser');
@@ -50,8 +57,11 @@ const App = () => {
 
   const addBlog = async (blogObject) => {
     try {
+      console.log(blogObject, 'incoming blog -- just form input: title, author, url');
       const newBlog = await blogService.create(blogObject);
+      console.log(newBlog, 'blog after post -- blog after being sent back from backend where it attaches the user and likes to all blog post reqs');
       setBlogs(blogs.concat(newBlog));
+      setModifiedBlogs(!modifiedBlogs);
       createBlogFormRef.current.toggleVisibility();
       setMessage(`Successfully posted ${newBlog.title}`);
       notificationTimeout(5000);
@@ -71,6 +81,7 @@ const App = () => {
       const blogAfterEdit = await blogService.edit(id, updatedBlog);
 
       setBlogs(blogs.map(blog => blog.id !== id ? blog : blogAfterEdit));
+      setModifiedBlogs(!modifiedBlogs);
 
       setMessage(`${blogAfterEdit.title}'s likes were updated from ${blog.likes - 1} to ${updatedBlog.likes}`);
       notificationTimeout(5000);

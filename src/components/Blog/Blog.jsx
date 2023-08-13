@@ -8,7 +8,7 @@ const Blog = ({ blog, user, handleLike, handleDelete }) => {
     <>
       <p>{blog.title}</p>
       <ToggleButton buttonLabel='Show Details' buttonLabel2='Hide Details' >
-        <div>
+        <div className='blog'>
           By author:{blog.author} - {blog.likes} likes.
           <br />
           Posted by username:{blog.user.username}, name:{blog.user.name}.

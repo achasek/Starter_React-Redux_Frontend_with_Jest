@@ -4,6 +4,8 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Blog from './Blog';
 
+// add a beforeEach that logs the user in before testing some of these things since token may expire if we dont do this
+
 test('renders content', () => {
   const blog = {
     title: 'Jest Test Blog',

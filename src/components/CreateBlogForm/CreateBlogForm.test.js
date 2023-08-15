@@ -8,11 +8,11 @@ test('<CreateBlogForm /> updates parent state and calls onSubmit', async () => {
   const addBlog = jest.fn();
   const user = userEvent.setup();
 
-  render(<CreateBlogForm addBlog={addBlog} />);
+  const { container } = render(<CreateBlogForm addBlog={addBlog} />);
 
-  const titleInput = screen.getByPlaceholderText('title of blog');
-  const authorInput = screen.getByPlaceholderText('author of blog');
-  const urlInput = screen.getByPlaceholderText('url of blog');
+  const titleInput = container.querySelector('.title');
+  const authorInput = container.querySelector('.author');
+  const urlInput = container.querySelector('.url');
 
   const sendButton = screen.getByText('Post');
 

@@ -4,6 +4,9 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ToggleButton from './ToggleButton';
 
+// add test to blog.test that checks if only the title is rendered and all other details are not defined or shown until toggle button clicked, then check here if those elements are now shown/defined
+// add mock func call to handleLike and check that if button is called 2 times, that it was passed down as props twice. Start with : expect(addBlog.mock.calls).toHaveLength(2);
+
 describe('<Togglable />', () => {
   let container;
 

@@ -18,7 +18,7 @@ const Blog = ({ blog, user, handleLike, handleDelete }) => {
           <Button handleClick={() => handleLike(blog.id)} buttonLabel='Like' />
           {user &&
             blog.user.username === user.username &&
-              <Button handleClick={() => handleDelete(blog.id)} buttonLabel='Delete' />
+              <Button id="delete-button" handleClick={() => handleDelete(blog.id)} buttonLabel='Delete' />
           }
         </div>
       </ToggleButton>

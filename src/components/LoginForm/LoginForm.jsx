@@ -94,6 +94,7 @@ const LoginForm = ({ setUser, setMessage, notificationTimeout }) => {
         <div>
                     username:
           <input
+            id="username"
             type="text"
             value={username}
             name="username"
@@ -103,13 +104,14 @@ const LoginForm = ({ setUser, setMessage, notificationTimeout }) => {
         <div>
                     password:
           <input
+            id="password"
             type={seePassword ? 'text' : 'password'}
             value={password}
             name="password"
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
-        <button type="submit">Login</button>
+        <button id="login-button" type="submit">Login</button>
       </form>
       <button onClick={viewPassword}>See password</button>
     </>

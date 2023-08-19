@@ -1,4 +1,16 @@
 describe('Blog app', function() {
+  // only need to send post req once
+  before(function() {
+    cy.request('POST', 'http://localhost:3003/api/testing/reset');
+    const user = {
+      name: 'Cypress Test',
+      username: 'cypress',
+      password: 'e2etest'
+    };
+    cy.request('POST', 'http://localhost:3003/api/users/', user);
+  });
+
+  // do need to visit page before every test tho
   beforeEach(function() {
     cy.visit('http://localhost:3000');
   });
@@ -16,11 +28,11 @@ describe('Blog app', function() {
   // before adding 2nd .click() and .contains('Welcome kyra'), credentials here do not need to match any existing credentials in db yet. It just tests to see if one can attempt to login, not if the login is valid yet
   it('user can login', function () {
     cy.contains('Login').click();
-    cy.get('#username').type('thisiskyra');
-    cy.get('#password').type('123456');
+    cy.get('#username').type('cypress');
+    cy.get('#password').type('e2etest');
 
     cy.get('#login-button').click();
-    cy.contains('Welcome kyra');
+    cy.contains('Welcome Cypress Test');
   });
   // just used to demostrate what a failed test looks like in cypress
   // it('front page contains random text', function() {
@@ -28,11 +40,13 @@ describe('Blog app', function() {
   //   cy.contains('wtf is this app?');
   // });
 
+
+
   describe('when logged in', function() {
     beforeEach(function() {
       cy.contains('Login').click();
-      cy.get('input:first').type('thisiskyra');
-      cy.get('input:last').type('123456');
+      cy.get('input:first').type('cypress');
+      cy.get('input:last').type('e2etest');
 
       cy.get('#login-button').click();
     });
@@ -47,6 +61,13 @@ describe('Blog app', function() {
       // force true and querying by id or class works
       cy.get('#post-button').click({ force: true });
       cy.contains('a blog created by cypress');
+    });
+
+    it('the new blog can have its details viewed', function() {
+      cy.contains('a blog created by cypress');
+      cy.contains('Show Details').click();
+
+      cy.contains('author: cypress');
     });
 
     it('a user can delete their own blog', function() {

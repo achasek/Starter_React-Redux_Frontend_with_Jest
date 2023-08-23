@@ -122,6 +122,15 @@ describe('Blog app', function() {
         cy.contains('Show Details').click();
         cy.contains('Delete').should('not.exist');
       });
+
+      it('when a blog is liked, it should be displayed at the top of the page', function() {
+        cy.contains('a 2nd blog');
+        cy.contains('Show Details').click();
+        cy.contains('Like').click();
+
+        cy.get('.blogs').get('.blogWrapper').eq(0).should('contain', '1 likes');
+        cy.get('.blogs').get('.blogWrapper').eq(1).should('contain', '0 likes');
+      });
     });
   });
 });

@@ -5,7 +5,7 @@ import Button from '../Button/Button';
 const Blog = ({ blog, user, handleLike, handleDelete }) => {
 
   return (
-    <>
+    <div className="blogWrapper">
       <p>{blog.title}</p>
       <ToggleButton buttonLabel='Show Details' buttonLabel2='Hide Details' >
         <div className='blog'>
@@ -22,7 +22,7 @@ const Blog = ({ blog, user, handleLike, handleDelete }) => {
           }
         </div>
       </ToggleButton>
-    </>
+    </div>
   );
 };
 

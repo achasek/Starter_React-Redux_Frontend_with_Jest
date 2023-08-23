@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 // components/page imports
-import Blog from './components/Blog/Blog';
+import BlogsList from './components/BlogsList/BlogsList';
 import LoginForm from './components/LoginForm/LoginForm';
 import Notification from './components/Notification/Notification';
 import Button from './components/Button/Button';
@@ -127,11 +127,7 @@ const App = () => {
         <Button handleClick={handleLogout} buttonLabel="Logout" />
       }
       <h2>Blogs</h2>
-      {
-        blogs.sort((blog1, blog2) => blog2.likes - blog1.likes).map(blog =>
-          <Blog key={blog.id} blog={blog} user={user} handleLike={handleLike} handleDelete={handleDelete} />
-        )
-      }
+      <BlogsList blogs={blogs} user={user} handleLike={handleLike} handleDelete={handleDelete} />
     </div>
   );
 };

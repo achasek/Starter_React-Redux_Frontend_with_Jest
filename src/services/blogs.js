@@ -33,7 +33,11 @@ const edit = async (id, edittedBlog) => {
   const authorizationHeader = {
     headers: { Authorization: token },
   };
-  const response = await axios.put(`${BASE_URL}/${id}`, edittedBlog, authorizationHeader);
+  const response = await axios.put(
+    `${BASE_URL}/${id}`,
+    edittedBlog,
+    authorizationHeader,
+  );
   return response.data;
 };
 

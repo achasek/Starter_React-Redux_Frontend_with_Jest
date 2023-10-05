@@ -1,7 +1,7 @@
 node_modules
 build
 .eslintrc.js
+.eslintignore
 cypress.config.js
-.babelrc
 .prettierrc
-.prettierignore
+.babelrc

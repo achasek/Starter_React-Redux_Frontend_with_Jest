@@ -48,9 +48,9 @@ const CreateBlogForm = ({ addBlog }) => {
     addBlog({
       title: title,
       author: author,
-      url: url
+      url: url,
     });
-    
+
     setTitle('');
     setAuthor('');
     setUrl('');
@@ -61,39 +61,41 @@ const CreateBlogForm = ({ addBlog }) => {
       <h1>Post New Blog</h1>
       <form onSubmit={sendBlog}>
         <div>
-                    Title:
+          Title:
           <input
-            className='title'
+            className="title"
             name="title"
             type="text"
-            placeholder='title of blog'
+            placeholder="title of blog"
             value={title}
             onChange={({ target }) => setTitle(target.value)}
           />
         </div>
         <div>
-                    Author:
+          Author:
           <input
-            className='author'
+            className="author"
             name="author"
             type="text"
-            placeholder='author of blog'
+            placeholder="author of blog"
             value={author}
             onChange={({ target }) => setAuthor(target.value)}
           />
         </div>
         <div>
-                    Original URL of blog:
+          Original URL of blog:
           <input
-            className='url'
+            className="url"
             name="url"
             type="text"
-            placeholder='url of blog'
+            placeholder="url of blog"
             value={url}
             onChange={({ target }) => setUrl(target.value)}
           />
         </div>
-        <button id="post-button" type="submit">Post</button>
+        <button id="post-button" type="submit">
+          Post
+        </button>
       </form>
     </>
   );

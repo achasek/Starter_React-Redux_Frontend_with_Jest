@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-import { useState, useEffect, forwardRef, useImperativeHandle  } from 'react';
+import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 
 import Button from '../Button/Button';
 
@@ -18,7 +18,7 @@ const ToggleButton = forwardRef((props, ref) => {
   // and by adding props.blogs to dependency array, it hides the newBlog form after a new blog is posted as well
   // but we dont need to add props.blogs anymore since useRef solves this issue
   useEffect(() => {
-    setVisible( false );
+    setVisible(false);
   }, [props.user]);
 
   const toggleVisibility = () => {
@@ -27,7 +27,7 @@ const ToggleButton = forwardRef((props, ref) => {
 
   useImperativeHandle(ref, () => {
     return {
-      toggleVisibility
+      toggleVisibility,
     };
   });
 
@@ -36,9 +36,12 @@ const ToggleButton = forwardRef((props, ref) => {
   return (
     <div>
       <div style={hideWhenVisible}>
-        <Button handleClick={toggleVisibility} buttonLabel={props.buttonLabel} />
+        <Button
+          handleClick={toggleVisibility}
+          buttonLabel={props.buttonLabel}
+        />
       </div>
-      <div style={showWhenVisible} className='togglableContent'>
+      <div style={showWhenVisible} className="togglableContent">
         {props.children}
         <Button handleClick={toggleVisibility} buttonLabel={toggleOffLabel} />
       </div>
@@ -47,7 +50,7 @@ const ToggleButton = forwardRef((props, ref) => {
 });
 
 ToggleButton.propTypes = {
-    buttonLabel: PropTypes.string.isRequired
+  buttonLabel: PropTypes.string.isRequired,
 };
 
 ToggleButton.displayName = 'ToggleButton';

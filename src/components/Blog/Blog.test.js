@@ -12,7 +12,7 @@ test('renders content: but only renders title when toggleButton is not toggled',
     author: 'Jest',
     url: 'www.jest.com',
     // needs a user attached for test. thisiskyra id
-    user: '64c07adce56d84be2f5d69a0'
+    user: '64c07adce56d84be2f5d69a0',
   };
 
   const { container } = render(<Blog blog={blog} />);
@@ -36,14 +36,12 @@ test('clicking the button calls event handler once', async () => {
     url: 'www.jest.com',
     likes: 1,
     // needs a user attached for test. thisiskyra id
-    user: '64c07adce56d84be2f5d69a0'
+    user: '64c07adce56d84be2f5d69a0',
   };
 
   const mockHandler = jest.fn();
 
-  render(
-    <Blog blog={blog} handleLike={mockHandler} />
-  );
+  render(<Blog blog={blog} handleLike={mockHandler} />);
 
   const user = userEvent.setup();
   const button = screen.getByText('Like');
@@ -60,14 +58,12 @@ test('clicking the button twice calls event handler twice', async () => {
     url: 'www.jest.com',
     likes: 1,
     // needs a user attached for test. thisiskyra id
-    user: '64c07adce56d84be2f5d69a0'
+    user: '64c07adce56d84be2f5d69a0',
   };
 
   const mockHandler = jest.fn();
 
-  render(
-    <Blog blog={blog} handleLike={mockHandler} />
-  );
+  render(<Blog blog={blog} handleLike={mockHandler} />);
 
   const user = userEvent.setup();
   const button = screen.getByText('Like');

@@ -16,7 +16,7 @@ const LoginForm = ({ setUser, setMessage, notificationTimeout }) => {
   // only censors password in the console.log statement in handleLogin()
   const passwordCensor = (password) => {
     let str = [];
-    for(let i = 0; i < password.length; i++) {
+    for (let i = 0; i < password.length; i++) {
       str.push('*');
     }
     str = str.join('');
@@ -33,19 +33,22 @@ const LoginForm = ({ setUser, setMessage, notificationTimeout }) => {
     event.preventDefault();
     try {
       const user = await loginService.login({
-        username, password
+        username,
+        password,
       });
-      window.localStorage.setItem(
-        'loggedAppUser', JSON.stringify(user)
-      ); 
+      window.localStorage.setItem('loggedAppUser', JSON.stringify(user));
       blogService.setToken(user.token);
       setUser(user);
       setUsername('');
       setPassword('');
-      console.log(`logging in as ${username} : ${passwordCensor(password)} : ${user.token}`);
+      console.log(
+        `logging in as ${username} : ${passwordCensor(password)} : ${
+          user.token
+        }`,
+      );
       setMessage(`Welcome ${user.name}`);
       notificationTimeout(5000);
-    } catch(error) {
+    } catch (error) {
       console.log(error.name, error.message);
       setMessage('Invalid Username or Password');
       notificationTimeout(5000);
@@ -53,46 +56,46 @@ const LoginForm = ({ setUser, setMessage, notificationTimeout }) => {
   };
 
   return (
-  // old conditional rendering prior to props.children implementation and ToggleButton component
-  // <>
-  //     {!showLogin ?
-  //     <>
-  //         <Button handleClick={() => setShowLogin(true)} buttonLabel='Login' />
-  //     </>
-  //     :
-  //     <>
-  //         <h1>Login Form</h1>
-  //             <form onSubmit={handleLogin}>
-  //             <div>
-  //                 username:
-  //             <input
-  //                 type="text"
-  //                 value={username}
-  //                 name="Username"
-  //                 onChange={({ target }) => setUsername(target.value)}
-  //             />
-  //             </div>
-  //             <div>
-  //                 password:
-  //             <input
-  //                 type={seePassword ? "text" : "password"}
-  //                 value={password}
-  //                 name="Password"
-  //                 onChange={({ target }) => setPassword(target.value)}
-  //             />
-  //             </div>
-  //             <button onClick={viewPassword}>See password</button>
-  //             <button type="submit">login</button>
-  //         </form>
-  //         <Button handleClick={() => setShowLogin(false)} buttonLabel='Cancel' />
-  //     </>
-  //     }
-  // </>
+    // old conditional rendering prior to props.children implementation and ToggleButton component
+    // <>
+    //     {!showLogin ?
+    //     <>
+    //         <Button handleClick={() => setShowLogin(true)} buttonLabel='Login' />
+    //     </>
+    //     :
+    //     <>
+    //         <h1>Login Form</h1>
+    //             <form onSubmit={handleLogin}>
+    //             <div>
+    //                 username:
+    //             <input
+    //                 type="text"
+    //                 value={username}
+    //                 name="Username"
+    //                 onChange={({ target }) => setUsername(target.value)}
+    //             />
+    //             </div>
+    //             <div>
+    //                 password:
+    //             <input
+    //                 type={seePassword ? "text" : "password"}
+    //                 value={password}
+    //                 name="Password"
+    //                 onChange={({ target }) => setPassword(target.value)}
+    //             />
+    //             </div>
+    //             <button onClick={viewPassword}>See password</button>
+    //             <button type="submit">login</button>
+    //         </form>
+    //         <Button handleClick={() => setShowLogin(false)} buttonLabel='Cancel' />
+    //     </>
+    //     }
+    // </>
     <>
       <h1>Login Form</h1>
       <form onSubmit={handleLogin}>
         <div>
-                    username:
+          username:
           <input
             id="username"
             type="text"
@@ -102,7 +105,7 @@ const LoginForm = ({ setUser, setMessage, notificationTimeout }) => {
           />
         </div>
         <div>
-                    password:
+          password:
           <input
             id="password"
             type={seePassword ? 'text' : 'password'}
@@ -111,7 +114,9 @@ const LoginForm = ({ setUser, setMessage, notificationTimeout }) => {
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
-        <button id="login-button" type="submit">Login</button>
+        <button id="login-button" type="submit">
+          Login
+        </button>
       </form>
       <button onClick={viewPassword}>See password</button>
     </>

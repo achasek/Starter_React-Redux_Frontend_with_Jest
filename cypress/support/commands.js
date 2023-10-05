@@ -24,7 +24,6 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-
 // A NOTE ABOUT COMMANDS
 // in cyrpress, when writing tests in the front end, it has access to the UI
 // and can be used similarly to how an actual user would use the app
@@ -37,7 +36,8 @@
 
 Cypress.Commands.add('login', ({ username, password }) => {
   cy.request('POST', 'http://localhost:3003/api/login', {
-    username, password
+    username,
+    password,
   }).then(({ body }) => {
     localStorage.setItem('loggedAppUser', JSON.stringify(body));
     cy.visit('http://localhost:3000');
@@ -50,8 +50,10 @@ Cypress.Commands.add('createBlog', ({ title, author, url }) => {
     method: 'POST',
     body: { title, author, url },
     headers: {
-      'Authorization': `Bearer ${JSON.parse(localStorage.getItem('loggedAppUser')).token}`
-    }
+      Authorization: `Bearer ${
+        JSON.parse(localStorage.getItem('loggedAppUser')).token
+      }`,
+    },
   });
 
   cy.visit('http://localhost:3000');

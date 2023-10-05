@@ -1,5 +1,7 @@
 /* eslint-disable no-trailing-spaces */
 import { useState } from 'react';
+import { setNotification } from '../../reducers/notificationReducer/notificationReducer';
+import { useDispatch } from 'react-redux';
 
 // components/page imports
 
@@ -8,10 +10,12 @@ import loginService from '../../services/login';
 import blogService from '../../services/blogs';
 import PropTypes from 'prop-types';
 
-const LoginForm = ({ setUser, setMessage, notificationTimeout }) => {
+const LoginForm = ({ setUser, notificationTimeout }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [seePassword, setSeePassword] = useState(false);
+
+  const dispatch = useDispatch();
 
   // only censors password in the console.log statement in handleLogin()
   const passwordCensor = (password) => {
@@ -46,11 +50,11 @@ const LoginForm = ({ setUser, setMessage, notificationTimeout }) => {
           user.token
         }`,
       );
-      setMessage(`Welcome ${user.name}`);
+      dispatch(setNotification(`Welcome ${user.name}`));
       notificationTimeout(5000);
     } catch (error) {
       console.log(error.name, error.message);
-      setMessage('Invalid Username or Password');
+      dispatch(setNotification('Invalid Username or Password'));
       notificationTimeout(5000);
     }
   };

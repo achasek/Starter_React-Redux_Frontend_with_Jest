@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
+import { setNotification } from './reducers/notificationReducer/notificationReducer';
+import { useDispatch } from 'react-redux';
 
 // components/page imports
 import BlogsList from './components/BlogsList/BlogsList';
@@ -14,8 +16,9 @@ import blogService from './services/blogs';
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  const [message, setMessage] = useState(null);
   const [modifiedBlogs, setModifiedBlogs] = useState(false);
+
+  const dispatch = useDispatch();
 
   // upon show function, it would not display the name and user of a newly posted blog unless you refreshed the page, so i put [blogs] in the dep array, which solves the issue, but creates an infinite loop of get reqs initiated by this useEffect. dunno the answer yet
   // so heres the makeshift solution for now:
@@ -48,7 +51,7 @@ const App = () => {
 
   const notificationTimeout = (time) => {
     setTimeout(() => {
-      setMessage(null);
+      dispatch(setNotification(''));
     }, time);
   };
 
@@ -66,11 +69,11 @@ const App = () => {
       setBlogs(blogs.concat(newBlog));
       setModifiedBlogs(!modifiedBlogs);
       createBlogFormRef.current.toggleVisibility();
-      setMessage(`Successfully posted ${newBlog.title}`);
+      dispatch(setNotification(`Successfully posted ${newBlog.title}`));
       notificationTimeout(5000);
     } catch (error) {
       console.log(error.name, error.message, error.response.data.error);
-      setMessage(`Error posting blog : ${error.response.data.error}`);
+      dispatch(setNotification(`Error posting blog : ${error.response.data.error}`));
       notificationTimeout(5000);
       ifExpiredToken(error);
     }
@@ -86,15 +89,15 @@ const App = () => {
       setBlogs(blogs.map((blog) => (blog.id !== id ? blog : blogAfterEdit)));
       setModifiedBlogs(!modifiedBlogs);
 
-      setMessage(
+      dispatch(setNotification(
         `${blogAfterEdit.title}'s likes were updated from ${
           blog.likes - 1
         } to ${updatedBlog.likes}`,
-      );
+      ));
       notificationTimeout(5000);
     } catch (error) {
       console.log(error.name, error.message, error.response.data.error);
-      setMessage(`Error liking blog : ${error.response.data.error}`);
+      dispatch(setNotification(`Error liking blog : ${error.response.data.error}`));
       notificationTimeout(5000);
       ifExpiredToken(error);
       setBlogs(blogs.filter((blog) => blog.id !== id));
@@ -104,12 +107,12 @@ const App = () => {
   const handleDelete = async (id) => {
     try {
       await blogService.deleteBlog(id);
-      setMessage('Blog successfully deleted');
+      dispatch(setNotification('Blog successfully deleted'));
       notificationTimeout(5000);
       setBlogs(blogs.filter((blog) => blog.id !== id));
     } catch (error) {
       console.log(error.name, error.message, error.response.data.error);
-      setMessage(`Error deleting blog : ${error.response.data.error}`);
+      dispatch(setNotification(`Error deleting blog : ${error.response.data.error}`));
       notificationTimeout(5000);
       ifExpiredToken(error);
     }
@@ -122,7 +125,7 @@ const App = () => {
 
   return (
     <div>
-      <Notification message={message} />
+      <Notification />
       <ToggleButton
         buttonLabel={user ? 'Post New Blog' : 'Login'}
         user={user}
@@ -133,7 +136,6 @@ const App = () => {
         ) : (
           <LoginForm
             setUser={setUser}
-            setMessage={setMessage}
             notificationTimeout={notificationTimeout}
           />
         )}

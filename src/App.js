@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { setNotification } from './reducers/notificationReducer/notificationReducer';
 import { useDispatch } from 'react-redux';
+import { initializeBlogs } from './reducers/blogReducer/blogReducer';
 
 // components/page imports
 import BlogsList from './components/BlogsList/BlogsList';
@@ -26,9 +27,18 @@ const App = () => {
   // then update that state when post or put req to /api/blogs is made
   // this solves prob of username and name not showing before a manual refresh and infinite loop in this useEffect
   // by separating the states and putting new state in dep arr here as opposed to the original blog state, useEffect no longer is in infinite loop
+  // useEffect(() => {
+  //   console.log('useEffect hit in app');
+  //   blogService.getAll().then((blogs) => setBlogs(blogs));
+  // }, [modifiedBlogs]);
+
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, [modifiedBlogs]);
+    console.log('useeffect being called');
+    dispatch(initializeBlogs());
+  }, []);
+
+  // const reduxBlogs = useSelector((state) => state.blogs);
+  // console.log(reduxBlogs, 'redux blogs');
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedAppUser');
@@ -143,7 +153,6 @@ const App = () => {
       {user && <Button handleClick={handleLogout} buttonLabel="Logout" />}
       <h2>Blogs</h2>
       <BlogsList
-        blogs={blogs}
         user={user}
         handleLike={handleLike}
         handleDelete={handleDelete}

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { setNotification } from './reducers/notificationReducer/notificationReducer';
 import { useDispatch, useSelector } from 'react-redux';
-import { initializeBlogs, likeBlog } from './reducers/blogReducer/blogReducer';
+import { initializeBlogs, createBlog,likeBlog } from './reducers/blogReducer/blogReducer';
 
 // components/page imports
 import BlogsList from './components/BlogsList/BlogsList';
@@ -23,6 +23,8 @@ const App = () => {
 
   const reduxBlogs = useSelector((state) => state.blogs);
 
+  const reduxModifiedBlogs = useSelector((state) => state.modifiedBlog);
+
   // upon show function, it would not display the name and user of a newly posted blog unless you refreshed the page, so i put [blogs] in the dep array, which solves the issue, but creates an infinite loop of get reqs initiated by this useEffect. dunno the answer yet
   // so heres the makeshift solution for now:
   // i added a new state just to keep track of when a new blog is added / modified
@@ -37,7 +39,7 @@ const App = () => {
   useEffect(() => {
     console.log('useeffect being called');
     dispatch(initializeBlogs());
-  }, []);
+  }, [reduxModifiedBlogs]);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedAppUser');
@@ -66,28 +68,49 @@ const App = () => {
   };
 
   const addBlog = async (blogObject) => {
-    try {
-      console.log(
-        blogObject,
-        'incoming blog -- just form input: title, author, url',
-      );
-      const newBlog = await blogService.create(blogObject);
-      console.log(
-        newBlog,
-        'blog after post -- blog after being sent back from backend where it attaches the user and likes to all blog post reqs',
-      );
-      setBlogs(blogs.concat(newBlog));
-      setModifiedBlogs(!modifiedBlogs);
-      createBlogFormRef.current.toggleVisibility();
-      dispatch(setNotification(`Successfully posted ${newBlog.title}`));
-      notificationTimeout(5000);
-    } catch (error) {
-      console.log(error.name, error.message, error.response.data.error);
-      dispatch(setNotification(`Error posting blog : ${error.response.data.error}`));
-      notificationTimeout(5000);
-      ifExpiredToken(error);
-    }
+    // try {
+    console.log(
+      blogObject,
+      'incoming blog -- just form input: title, author, url',
+    );
+    console.log(reduxModifiedBlogs, 'mod blog before dis');
+    setModifiedBlogs(!modifiedBlogs);
+    dispatch(createBlog(blogObject));
+    console.log(reduxModifiedBlogs, 'mod blog after dis');
+    createBlogFormRef.current.toggleVisibility();
+    notificationTimeout(5000);
+    // } catch (error) {
+    //   console.log('app js error hit');
+    //   console.log(error.name, error.message, error.response.data.error);
+    //   dispatch(setNotification(`Error posting blog : ${error.response.data.error}`));
+    //   notificationTimeout(5000);
+    //   ifExpiredToken(error);
+    // }
   };
+
+  // const addBlog = async (blogObject) => {
+  //   try {
+  //     console.log(
+  //       blogObject,
+  //       'incoming blog -- just form input: title, author, url',
+  //     );
+  //     const newBlog = await blogService.create(blogObject);
+  //     console.log(
+  //       newBlog,
+  //       'blog after post -- blog after being sent back from backend where it attaches the user and likes to all blog post reqs',
+  //     );
+  //     setBlogs(blogs.concat(newBlog));
+  //     setModifiedBlogs(!modifiedBlogs);
+  //     createBlogFormRef.current.toggleVisibility();
+  //     dispatch(setNotification(`Successfully posted ${newBlog.title}`));
+  //     notificationTimeout(5000);
+  //   } catch (error) {
+  //     console.log(error.name, error.message, error.response.data.error);
+  //     dispatch(setNotification(`Error posting blog : ${error.response.data.error}`));
+  //     notificationTimeout(5000);
+  //     ifExpiredToken(error);
+  //   }
+  // };
 
   const handleLike = async (id) => {
     try {

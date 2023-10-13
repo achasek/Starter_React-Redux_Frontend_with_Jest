@@ -1,6 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import blogService from '../../services/blogs';
 import { setNotification } from '../notificationReducer/notificationReducer';
+import { toggleModifiedBlog } from './modifedBlog';
+
+// to run ifExpiredToken in this module, ill have to transfer state managment of users to redux here
 
 const blogSlice = createSlice({
   name: 'blogs',
@@ -22,6 +25,19 @@ export const initializeBlogs = () => {
   return async (dispatch) => {
     const blogs = await blogService.getAll();
     dispatch(setBlogs(blogs));
+  };
+};
+
+export const createBlog = (blog) => {
+  return async (dispatch) => {
+    try {
+      const newBlog = await blogService.create(blog);
+      dispatch(appendBlog(newBlog));
+      dispatch(toggleModifiedBlog(true));
+      dispatch(setNotification(`Successfully posted ${blog.title}`));
+    } catch(error) {
+      dispatch(setNotification(`Error creating blog: ${error.response.data.error}`));
+    }
   };
 };
 

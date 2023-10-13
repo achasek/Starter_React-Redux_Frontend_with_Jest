@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { setNotification } from './reducers/notificationReducer/notificationReducer';
-import { useDispatch } from 'react-redux';
-import { initializeBlogs } from './reducers/blogReducer/blogReducer';
+import { useDispatch, useSelector } from 'react-redux';
+import { initializeBlogs, likeBlog } from './reducers/blogReducer/blogReducer';
 
 // components/page imports
 import BlogsList from './components/BlogsList/BlogsList';
@@ -21,6 +21,8 @@ const App = () => {
 
   const dispatch = useDispatch();
 
+  const reduxBlogs = useSelector((state) => state.blogs);
+
   // upon show function, it would not display the name and user of a newly posted blog unless you refreshed the page, so i put [blogs] in the dep array, which solves the issue, but creates an infinite loop of get reqs initiated by this useEffect. dunno the answer yet
   // so heres the makeshift solution for now:
   // i added a new state just to keep track of when a new blog is added / modified
@@ -37,9 +39,6 @@ const App = () => {
     dispatch(initializeBlogs());
   }, []);
 
-  // const reduxBlogs = useSelector((state) => state.blogs);
-  // console.log(reduxBlogs, 'redux blogs');
-
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedAppUser');
     if (loggedUserJSON) {
@@ -52,7 +51,8 @@ const App = () => {
   const createBlogFormRef = useRef();
 
   const ifExpiredToken = (error) => {
-    if (error.response.data.error === 'token expired: please log in again') {
+    // if (error.response.data.error === 'token expired: please log in again') {
+    if (error.message === 'token expired: please log in again') {
       setTimeout(() => {
         handleLogout();
       }, 5000);
@@ -90,29 +90,56 @@ const App = () => {
   };
 
   const handleLike = async (id) => {
-    const blog = blogs.find((blog) => blog.id === id);
-    const updatedBlog = { ...blog, likes: (blog.likes += 1) };
-
     try {
-      const blogAfterEdit = await blogService.edit(id, updatedBlog);
+      dispatch(likeBlog(id, reduxBlogs));
 
-      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : blogAfterEdit)));
       setModifiedBlogs(!modifiedBlogs);
 
+      const likedBlog = reduxBlogs.find((blog) =>  blog.id === id);
+      console.log(likedBlog, 'handleLike blog');
       dispatch(setNotification(
-        `${blogAfterEdit.title}'s likes were updated from ${
-          blog.likes - 1
-        } to ${updatedBlog.likes}`,
+        // `${blogAfterEdit.title}'s likes were updated from ${
+        //   blog.likes - 1
+        // } to ${updatedBlog.likes}`,
+        `${likedBlog.title} was liked`
       ));
       notificationTimeout(5000);
-    } catch (error) {
-      console.log(error.name, error.message, error.response.data.error);
-      dispatch(setNotification(`Error liking blog : ${error.response.data.error}`));
+    } catch(error) {
+      // console.log(error.name, error.message, error.response.data.error);
+      console.log(error.name, error.message);
+      // dispatch(setNotification(`Error liking blog : ${error.response.data.error}`));
+      // dispatch(setNotification(`Error liking blog : ${error.message}`));
       notificationTimeout(5000);
       ifExpiredToken(error);
-      setBlogs(blogs.filter((blog) => blog.id !== id));
+      // setBlogs(reduxBlogs.filter((blog) => blog.id !== id));
     }
+
   };
+
+  // const handleLike = async (id) => {
+  //   const blog = blogs.find((blog) => blog.id === id);
+  //   const updatedBlog = { ...blog, likes: (blog.likes += 1) };
+
+  //   try {
+  //     const blogAfterEdit = await blogService.edit(id, updatedBlog);
+
+  //     setBlogs(blogs.map((blog) => (blog.id !== id ? blog : blogAfterEdit)));
+  //     setModifiedBlogs(!modifiedBlogs);
+
+  //     dispatch(setNotification(
+  //       `${blogAfterEdit.title}'s likes were updated from ${
+  //         blog.likes - 1
+  //       } to ${updatedBlog.likes}`,
+  //     ));
+  //     notificationTimeout(5000);
+  //   } catch (error) {
+  //     console.log(error.name, error.message, error.response.data.error);
+  //     dispatch(setNotification(`Error liking blog : ${error.response.data.error}`));
+  //     notificationTimeout(5000);
+  //     ifExpiredToken(error);
+  //     setBlogs(blogs.filter((blog) => blog.id !== id));
+  //   }
+  // };
 
   const handleDelete = async (id) => {
     try {
@@ -153,6 +180,7 @@ const App = () => {
       {user && <Button handleClick={handleLogout} buttonLabel="Logout" />}
       <h2>Blogs</h2>
       <BlogsList
+        // testBlogs={blogs}
         user={user}
         handleLike={handleLike}
         handleDelete={handleDelete}

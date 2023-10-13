@@ -7,6 +7,8 @@ const BlogsList = ({ user, handleLike, handleDelete }) => {
 
   const blogArr = [...blogs];
 
+  // const testArr = [...testBlogs];
+
   const sortedBlogs = blogArr
     .sort((blog1, blog2) => blog2.likes - blog1.likes)
     .map((blog) => (

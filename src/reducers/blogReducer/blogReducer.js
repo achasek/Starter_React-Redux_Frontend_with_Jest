@@ -62,4 +62,18 @@ export const likeBlog = (id, blogs) => {
   };
 };
 
+export const deleteBlog = (id, blogs) => {
+  return async(dispatch) => {
+    try {
+      await blogService.deleteBlog(id);
+
+      dispatch(setNotification('Blog successfully deleted'));
+      dispatch(setBlogs(blogs.filter((blog) => blog.id !== id)));
+    } catch(error) {
+      console.log(error.name, error.message, error.response.data.error);
+      dispatch(setNotification(`Error deleting blog : ${error.response.data.error}`));
+    }
+  };
+};
+
 export default blogSlice.reducer;

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { setNotification } from './reducers/notificationReducer/notificationReducer';
 import { useDispatch, useSelector } from 'react-redux';
-import { initializeBlogs, createBlog,likeBlog } from './reducers/blogReducer/blogReducer';
+import { initializeBlogs, createBlog,likeBlog, deleteBlog } from './reducers/blogReducer/blogReducer';
 
 // components/page imports
 import BlogsList from './components/BlogsList/BlogsList';
@@ -15,7 +15,7 @@ import ToggleButton from './components/ToggleButton/ToggleButton';
 import blogService from './services/blogs';
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
+  // const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const [modifiedBlogs, setModifiedBlogs] = useState(false);
 
@@ -164,19 +164,24 @@ const App = () => {
   //   }
   // };
 
-  const handleDelete = async (id) => {
-    try {
-      await blogService.deleteBlog(id);
-      dispatch(setNotification('Blog successfully deleted'));
-      notificationTimeout(5000);
-      setBlogs(blogs.filter((blog) => blog.id !== id));
-    } catch (error) {
-      console.log(error.name, error.message, error.response.data.error);
-      dispatch(setNotification(`Error deleting blog : ${error.response.data.error}`));
-      notificationTimeout(5000);
-      ifExpiredToken(error);
-    }
+  const handleDelete = async(id) => {
+    dispatch(deleteBlog(id, reduxBlogs));
+    notificationTimeout(5000);
   };
+
+  // const handleDelete = async (id) => {
+  //   try {
+  //     await blogService.deleteBlog(id);
+  //     dispatch(setNotification('Blog successfully deleted'));
+  //     notificationTimeout(5000);
+  //     setBlogs(blogs.filter((blog) => blog.id !== id));
+  //   } catch (error) {
+  //     console.log(error.name, error.message, error.response.data.error);
+  //     dispatch(setNotification(`Error deleting blog : ${error.response.data.error}`));
+  //     notificationTimeout(5000);
+  //     ifExpiredToken(error);
+  //   }
+  // };
 
   const handleLogout = () => {
     window.localStorage.clear();

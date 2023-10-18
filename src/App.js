@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { setNotification } from './reducers/notificationReducer/notificationReducer';
 import { useDispatch, useSelector } from 'react-redux';
 import { initializeBlogs, createBlog,likeBlog, deleteBlog } from './reducers/blogReducer/blogReducer';
+import { setUser, loginUser } from './reducers/userReducer/userReducer';
 
 // components/page imports
 import BlogsList from './components/BlogsList/BlogsList';
@@ -16,7 +17,7 @@ import blogService from './services/blogs';
 
 const App = () => {
   // const [blogs, setBlogs] = useState([]);
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
   const [modifiedBlogs, setModifiedBlogs] = useState(false);
 
   const dispatch = useDispatch();
@@ -24,6 +25,9 @@ const App = () => {
   const reduxBlogs = useSelector((state) => state.blogs);
 
   const reduxModifiedBlogs = useSelector((state) => state.modifiedBlog);
+
+  const user = useSelector((state) => state.user);
+  console.log(user, 'redux user');
 
   // upon show function, it would not display the name and user of a newly posted blog unless you refreshed the page, so i put [blogs] in the dep array, which solves the issue, but creates an infinite loop of get reqs initiated by this useEffect. dunno the answer yet
   // so heres the makeshift solution for now:
@@ -45,7 +49,8 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedAppUser');
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
-      setUser(user);
+      // setUser(user);
+      dispatch(setUser(user));
       blogService.setToken(user.token);
     }
   }, []);
@@ -65,6 +70,12 @@ const App = () => {
     setTimeout(() => {
       dispatch(setNotification(''));
     }, time);
+  };
+
+  const newHandleLogin = async (userObject) => {
+    dispatch(loginUser(userObject));
+    notificationTimeout(5000);
+    createBlogFormRef.current.toggleVisibility();
   };
 
   const addBlog = async (blogObject) => {
@@ -185,7 +196,8 @@ const App = () => {
 
   const handleLogout = () => {
     window.localStorage.clear();
-    setUser(null);
+    dispatch(setUser(null));
+    // setUser(null);
   };
 
   return (
@@ -200,7 +212,7 @@ const App = () => {
           <CreateBlogForm addBlog={addBlog} />
         ) : (
           <LoginForm
-            setUser={setUser}
+            newHandleLogin = {newHandleLogin}
             notificationTimeout={notificationTimeout}
           />
         )}

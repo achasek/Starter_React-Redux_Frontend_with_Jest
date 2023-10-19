@@ -21,7 +21,7 @@ export const loginUser = (user) => {
   return async (dispatch) => {
     try {
       const incomingUser = await userService.login(user);
-      window.localStorage.setItem('loggedAppUser', JSON.stringify(user));
+      window.localStorage.setItem('loggedAppUser', JSON.stringify(incomingUser));
       blogService.setToken(incomingUser.token);
       console.log(
         `logging in as ${incomingUser.username} : ${

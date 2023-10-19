@@ -56,6 +56,7 @@ const LoginForm = ({ newHandleLogin }) => {
   //     window.localStorage.setItem('loggedAppUser', JSON.stringify(user));
   //     blogService.setToken(user.token);
   //     setUser(user);
+  
   //     setUsername('');
   //     setPassword('');
   //     console.log(

@@ -39,6 +39,7 @@ const edit = async (id, edittedBlog) => {
     edittedBlog,
     authorizationHeader,
   );
+  console.log(response.data, 'edit blog response.data in services');
   return response.data;
 };
 

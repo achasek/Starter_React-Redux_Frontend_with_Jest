@@ -24,8 +24,6 @@ const App = () => {
 
   const reduxBlogs = useSelector((state) => state.blogs);
 
-  const reduxModifiedBlogs = useSelector((state) => state.modifiedBlog);
-
   const user = useSelector((state) => state.user);
   console.log(user, 'redux user');
 
@@ -43,7 +41,7 @@ const App = () => {
   useEffect(() => {
     console.log('useeffect being called');
     dispatch(initializeBlogs());
-  }, [reduxModifiedBlogs]);
+  }, []);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedAppUser');
@@ -73,7 +71,7 @@ const App = () => {
   };
 
   const newHandleLogin = async (userObject) => {
-    dispatch(loginUser(userObject));
+    await dispatch(loginUser(userObject));
     notificationTimeout(5000);
     createBlogFormRef.current.toggleVisibility();
   };
@@ -84,10 +82,8 @@ const App = () => {
       blogObject,
       'incoming blog -- just form input: title, author, url',
     );
-    console.log(reduxModifiedBlogs, 'mod blog before dis');
     setModifiedBlogs(!modifiedBlogs);
     dispatch(createBlog(blogObject));
-    console.log(reduxModifiedBlogs, 'mod blog after dis');
     createBlogFormRef.current.toggleVisibility();
     notificationTimeout(5000);
     // } catch (error) {
@@ -125,12 +121,12 @@ const App = () => {
 
   const handleLike = async (id) => {
     try {
+      // eventually fix this. Do not send all blogs through req. Find way to access state of blogs in reducer instead of sending them through here
       dispatch(likeBlog(id, reduxBlogs));
 
       setModifiedBlogs(!modifiedBlogs);
 
       const likedBlog = reduxBlogs.find((blog) =>  blog.id === id);
-      console.log(likedBlog, 'handleLike blog');
       dispatch(setNotification(
         // `${blogAfterEdit.title}'s likes were updated from ${
         //   blog.likes - 1

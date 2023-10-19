@@ -1,9 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
 import blogService from '../../services/blogs';
 import { setNotification } from '../notificationReducer/notificationReducer';
-import { toggleModifiedBlog } from './modifedBlog';
+import { setUser } from '../userReducer/userReducer';
 
 // to run ifExpiredToken in this module, ill have to transfer state managment of users to redux here
+const ifExpiredToken = (error, dispatch) => {
+  if (error.response.data.error === 'token expired: please log in again') {
+    setTimeout(() => {
+      dispatch(setUser(null));
+    }, 5000);
+  }
+};
+
+// comment state in redux prior to update and after
 
 const blogSlice = createSlice({
   name: 'blogs',
@@ -33,10 +42,10 @@ export const createBlog = (blog) => {
     try {
       const newBlog = await blogService.create(blog);
       dispatch(appendBlog(newBlog));
-      dispatch(toggleModifiedBlog(true));
       dispatch(setNotification(`Successfully posted ${blog.title}`));
     } catch(error) {
       dispatch(setNotification(`Error creating blog: ${error.response.data.error}`));
+      ifExpiredToken(error, dispatch);
     }
   };
 };
@@ -44,10 +53,14 @@ export const createBlog = (blog) => {
 export const likeBlog = (id, blogs) => {
   return async (dispatch) => {
     const blogToUpdate = blogs.find((blog) =>  blog.id === id);
+    console.log(blogToUpdate, 'init blog');
     const updatedBlog = { ...blogToUpdate, likes: blogToUpdate.likes + 1 };
+    console.log(updatedBlog, 'updated blog prior to PUT req');
 
     try {
       const likedBlog = await blogService.edit(id, updatedBlog);
+
+      console.log(likedBlog, 'liked blog after PUT req');
 
       const newBlogs = blogs.map((blog) =>
         blog.id !== id ? blog : likedBlog,
@@ -58,6 +71,7 @@ export const likeBlog = (id, blogs) => {
       console.log(error.name, error.message, error.response.data.error);
       dispatch(setBlogs(blogs));
       dispatch(setNotification(`Error liking blog: ${error.response.data.error}`));
+      ifExpiredToken(error, dispatch);
     }
   };
 };
@@ -72,6 +86,7 @@ export const deleteBlog = (id, blogs) => {
     } catch(error) {
       console.log(error.name, error.message, error.response.data.error);
       dispatch(setNotification(`Error deleting blog : ${error.response.data.error}`));
+      ifExpiredToken(error, dispatch);
     }
   };
 };
